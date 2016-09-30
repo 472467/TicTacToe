@@ -83,6 +83,7 @@ int main(){
 				cin.sync();
 				cin.get();//makes the click to continue thing
 				
+				turn = PLAYER_X;
 				resetGrid();
 			}else if(checkWin(PLAYER_X)){
 				cout << "O WINS.";
@@ -92,6 +93,7 @@ int main(){
 				cin.sync();
 				cin.get();
 				
+				turn = PLAYER_X;
 				resetGrid();
 			}else if(checkTie()){
 				cout << "NO WINNER.";
@@ -101,6 +103,7 @@ int main(){
 				cin.sync();
 				cin.get();
 				
+				turn = PLAYER_X;
 				resetGrid();
 			}
 			
