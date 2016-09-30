@@ -19,8 +19,9 @@ int O_TURN = 1;
 //struct xYCoord{int x, int y};
 bool translateMove(char *move, int player);
 bool checkWin(int player);
-void updateGrid();
+void updateGrid(int turn, int xWins, int oWins);
 bool checkTie();
+void resetGrid();
 
 int main(){
 	system("clear");
@@ -46,59 +47,95 @@ int main(){
 	for(int x =0;  x < 30; x++){//cleans input
 		move[x]='\0';
 	}
-	cout << "Welcome to Tic Tac Toe! Type your move into the console. X cord first, then Y cord. EX. '1a', '2a' \n";
+	
 	int turn = 0;
+	int xWins = 0;
+	int oWins = 0;
 	while(true){
 		
 		while (!validMove){//move input
-			updateGrid();
+			updateGrid(turn, xWins, oWins);
 			
-			if(turn == 0){
-				cout << "Input new move.\n";
-				cin.getline(move, 30);
+			cout << "Input new move.\n";
+			cin.clear();
+			cin.sync();
+			cin.getline(move, 30);
+			
+			if(turn == X_TURN){
 				if(translateMove(move, PLAYER_X)){
 					validMove = true;
+				}else{
+					validMove = false;
 				}
-				if(checkWin(PLAYER_X)){
-					cout << "X WINS.";
-					cout << endl << "Hit ENTER to continue...";
-					cin.clear();
-					cin.sync();
-					cin.get();
-				}else if(checkWin(PLAYER_X)){
-					cout << "O WINS.";
-					cout << endl << "Hit ENTER to continue...";
-					cin.clear();
-					cin.sync();
-					cin.get();
-				}else if(checkTie()){
-					cout << "NO WINS.";
-					cout << endl << "Hit ENTER to continue...";
-					cin.clear();
-					cin.sync();
-					cin.get();
-				}
-				turn = O_TURN;
 			}else{
-				
-				turn = X_TURN;
+				if(translateMove(move, PLAYER_O)){
+					validMove = true;
+				}else{
+					validMove = false;
+				}
 			}
+			
+			if(checkWin(PLAYER_X)){
+				cout << "X WINS.";
+				cout << endl << "Hit ENTER to continue...";
+				xWins++;
+				cin.clear();
+				cin.sync();
+				cin.get();
+				
+				resetGrid();
+			}else if(checkWin(PLAYER_X)){
+				cout << "O WINS.";
+				cout << endl << "Hit ENTER to continue...";
+				oWins++;
+				cin.clear();
+				cin.sync();
+				cin.get();
+				
+				resetGrid();
+			}else if(checkTie()){
+				cout << "NO WINNER.";
+				cout << endl << "Hit ENTER to continue...";
+				
+				cin.clear();
+				cin.sync();
+				cin.get();
+				
+				resetGrid();
+			}
+			
+			if(validMove == true){
+				//cout << "ValidMove";
+				if(turn == X_TURN){
+					turn = O_TURN;
+				}else{
+					turn = X_TURN;
+				}
+			}
+			
+			
 			system("clear");
-			//cin.ignore();
 		}
-		cout << "SUCCESS\n";
 		validMove = false;
 	}
 }
 
 
-void updateGrid(){
+void updateGrid(int turn, int xWins, int oWins){
+	cout << "Welcome to Tic Tac Toe! Type your move into the console. X cord first, then Y cord. EX. '1a', '2a' \n\n";
+	cout << "x wins: " << xWins << " | o wins: " << oWins << "\n";
+	
+	if(turn == X_TURN){
+		cout << "X TURN\n";
+	}else{
+		cout << "O TURN\n";
+	}
 	for(int x = 0; x < 3; x++){
 		for(int y = 0; y < 3; y++){
 			if(valueGrid[x][y]== PLAYER_X){
 				charGrid[x+1][y+1]='X';
 			}else if(valueGrid[x][y]== PLAYER_O){
-				charGrid[x+1][y+1]='Y';
+				charGrid[x+1][y+1]='O';
 			}else{
 				charGrid[x+1][y+1]='.';
 			}
@@ -113,40 +150,85 @@ void updateGrid(){
 	}
 }
 
-
-bool translateMove(char *move, int player){
-	if(strcmp(move, "1a") == 0){
-		valueGrid[0][0]= player;
-		return true;
-	}else if(strcmp(move, "1b")==0){
-		valueGrid[0][1]= player;
-		return true;
-	}else if(strcmp(move, "1c")==0){
-		valueGrid[0][2]= player;
-		return true;
-	}else if(strcmp(move, "2a")==0){
-		valueGrid[1][0]= player;
-		return true;
-	}else if(strcmp(move, "2b")==0){
-		valueGrid[1][1]= player;
-		return true;
-	}else if(strcmp(move, "2c")==0){
-		valueGrid[1][2]= player;
-		return true;
-	}else if(strcmp(move, "3a")==0){
-		valueGrid[2][0]= player;
-		return true;
-	}else if(strcmp(move, "3b")==0){
-		valueGrid[2][1]= player;
-		return true;
-	}else if(strcmp(move, "3c")==0){
-		valueGrid[2][2]= player;
-		return true;
-	}else{
-		return false;
+void resetGrid(){
+	for(int x = 0; x < 3; x++){
+		for(int y = 0; y < 3; y++){
+			valueGrid[x][y]=0;
+		}
 	}
 }
 
+
+bool translateMove(char *move, int player){
+	if(strcmp(move, "1a") == 0){
+		if(valueGrid[0][0]== 0){
+			cout << valueGrid[0][0];
+			valueGrid[0][0]= player;
+			return true;
+		}else{
+			return false;
+		}
+	}else if(strcmp(move, "1b")==0){
+		if(valueGrid[0][1]== 0){
+			valueGrid[0][1]= player;
+			return true;
+		}else{
+			return false;
+		}
+	}else if(strcmp(move, "1c")==0){
+		if(valueGrid[0][2]== 0){
+			valueGrid[0][2]= player;
+			return true;
+		}else{
+			return false;
+		}
+	}else if(strcmp(move, "2a")==0){
+		if(valueGrid[1][0]== 0){
+			valueGrid[1][0]= player;
+			return true;
+		}else{
+			return false;
+		}
+	}else if(strcmp(move, "2b")==0){
+		if(valueGrid[1][1]== 0){
+			valueGrid[1][1]= player;
+			return true;
+		}else{
+			return false;
+		}
+	}else if(strcmp(move, "2c")==0){
+		if(valueGrid[1][2]== 0){
+			valueGrid[1][2]= player;
+			return true;
+		}else{
+			return false;
+		}
+	}else if(strcmp(move, "3a")==0){
+		if(valueGrid[2][0]== 0){
+			valueGrid[2][0]= player;
+			return true;
+		}else{
+			return false;
+		}
+	}else if(strcmp(move, "3b")==0){
+		if(valueGrid[2][1]== 0){
+			valueGrid[2][1]= player;
+			return true;
+		}else{
+			return false;
+		}
+	}else if(strcmp(move, "3c")==0){
+		if(valueGrid[2][2]== 0){
+			valueGrid[2][2]= player;
+			return true;
+		}else{
+			return false;
+		}
+	}else{
+		cout << "test\n\n\n\n\n\n test test test test";
+		return false;
+	}
+}
 
 bool checkWin(int player){ //checks if anyone has won yet, gets palyer
 	if (valueGrid [0][0] == player &&
