@@ -10,36 +10,36 @@
 
 using namespace std;
 
-int valueGrid [3][3];
-char charGrid [4][4];
-int PLAYER_X = 1;
+int valueGrid [3][3];//contains who owns each spot(0 is unowned)
+char charGrid [4][4];//char grid for printing 
+int PLAYER_X = 1;//final ints to simplify 
 int PLAYER_O = 2;
 int X_TURN = 0;
 int O_TURN = 1;
 //struct xYCoord{int x, int y};
-bool translateMove(char *move, int player);
+bool translateMove(char *move, int player);//initializes  other functions in front of main method, could put main() at bottom of page and that would work too
 bool checkWin(int player);
 void updateGrid(int turn, int xWins, int oWins);
 bool checkTie();
 void resetGrid();
 
 int main(){
-	system("clear");
+	system("clear");//clears other garbage that pollutes the game
 	bool validMove = false;
 	char move [30];
-	charGrid[0][0]=' ';
+	charGrid[0][0]=' ';//adds framework to char grid so it isnt readded everytime, this is never edited
 	charGrid[0][1]='a';
 	charGrid[0][2]='b';
 	charGrid[0][3]='c';
 	charGrid[1][0]='1';
 	charGrid[2][0]='2';
 	charGrid[3][0]='3';
-	for(int x = 1; x < 4; x++){
+	for(int x = 1; x < 4; x++){//adds markers in char grid
 		for(int y = 1; y < 4; y++){
 			charGrid[x][y]='.';
 		}
 	}
-	for(int y = 0; y < 3; y++){
+	for(int y = 0; y < 3; y++){//makes value grid all zeroes to start
 		for(int x = 0; x < 3; x++){
 			valueGrid[x][y] = 0;
 		}
@@ -51,17 +51,17 @@ int main(){
 	int turn = 0;
 	int xWins = 0;
 	int oWins = 0;
-	while(true){
+	while(true){//endless games of tictactoe yay!
 		
 		while (!validMove){//move input
-			updateGrid(turn, xWins, oWins);
+			updateGrid(turn, xWins, oWins);//outputs the char grid
 			
 			cout << "Input new move.\n";
 			cin.clear();
-			cin.sync();
+			cin.sync();//cleans cin 
 			cin.getline(move, 30);
 			
-			if(turn == X_TURN){
+			if(turn == X_TURN){//changes turn only if unoccupied space is claimed
 				if(translateMove(move, PLAYER_X)){
 					validMove = true;
 				}else{
@@ -81,7 +81,7 @@ int main(){
 				xWins++;
 				cin.clear();
 				cin.sync();
-				cin.get();
+				cin.get();//makes the click to continue thing
 				
 				resetGrid();
 			}else if(checkWin(PLAYER_X)){
@@ -114,14 +114,14 @@ int main(){
 			}
 			
 			
-			system("clear");
+			system("clear");//clears thing again to give illusion of fps sorta
 		}
-		validMove = false;
+		validMove = false;//makes it so that above while loop runs again
 	}
 }
 
 
-void updateGrid(int turn, int xWins, int oWins){
+void updateGrid(int turn, int xWins, int oWins){//updates the char grid then prints it
 	cout << "Welcome to Tic Tac Toe! Type your move into the console. X cord first, then Y cord. EX. '1a', '2a' \n\n";
 	cout << "x wins: " << xWins << " | o wins: " << oWins << "\n";
 	
@@ -150,7 +150,7 @@ void updateGrid(int turn, int xWins, int oWins){
 	}
 }
 
-void resetGrid(){
+void resetGrid(){//resets valueGrid which essential resets the game, minus wins of course
 	for(int x = 0; x < 3; x++){
 		for(int y = 0; y < 3; y++){
 			valueGrid[x][y]=0;
@@ -159,13 +159,13 @@ void resetGrid(){
 }
 
 
-bool translateMove(char *move, int player){
+bool translateMove(char *move, int player){//translates input to a position on the board
 	if(strcmp(move, "1a") == 0){
 		if(valueGrid[0][0]== 0){
 			cout << valueGrid[0][0];
 			valueGrid[0][0]= player;
 			return true;
-		}else{
+		}else{//need these to output false, otherwise turn swaps
 			return false;
 		}
 	}else if(strcmp(move, "1b")==0){
